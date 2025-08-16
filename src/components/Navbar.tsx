@@ -1,12 +1,22 @@
 import React, { useState } from "react";
 import { Menu, MenuItem, HoveredLink } from "@/components/ui/navbar-menu";
 import { cn } from "@/lib/utils";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import pawIcon from "@/assets/paw-icon.png";
 
 export default function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
-  const navigate = useNavigate();
+  
+  // Safe navigation hook usage
+  let navigate: (path: string) => void;
+  try {
+    navigate = useNavigate();
+  } catch (error) {
+    // Fallback for when not in router context
+    navigate = (path: string) => {
+      window.location.href = path;
+    };
+  }
 
   return (
     <div className={cn("fixed top-4 inset-x-0 max-w-4xl mx-auto z-50 px-4", className)}>
